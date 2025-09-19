@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 typedef struct  SingleNode{
+
     void *data;
     struct SingleNode  *next;
 
@@ -15,6 +16,7 @@ typedef struct  SingleNode{
 
 
 typedef struct {
+
     SingleNode *head;
     SingleNode *tail;
     size_t dataSize;
@@ -24,12 +26,12 @@ typedef struct {
 
 
 // Managing nodes
-void nodeInit(SingleNode *node);
-void dll_set_node_data(SingleNode  * node, void * data);
+SingleNode *singlenodeInit();
+void sll_set_node_data(SingleNode  * node, void * data);
 
 
 // Initializing and managing the linkedList
-singleLinkedList sll_init(singleLinkedList *list, size_t size);
+singleLinkedList sll_init(size_t size);
 int sll_free(singleLinkedList * list);
 int sll_is_empty(singleLinkedList * list);
 int sll_size(const singleLinkedList * list);

@@ -4,27 +4,33 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-typedef struct Node {
+typedef struct DynamicNode {
 
     void * data;
-    struct Node * next;
+    size_t dataSize;
+    struct DynamicNode* next;
 
 
-}Node;
+}DynamicNode;
 
 typedef struct DynamicStack {
 
-    Node *top;
-    size_t size;
+    struct DynamicNode *top;
+    int size;
     size_t dataSize;
 
 
 }DynamicStack;
 
+DynamicNode *dynamic_node_init(size_t dataSize);
+void dynamic_node_set_data(DynamicNode *node, void *data);
 
-DynamicStack * createDynamicStack(size_t dataSize);
-void push(DynamicStack * stack, Node* node);
-void pop(DynamicStack * stack);
+DynamicStack * dynamic_stack_init(size_t dataSize);
+
+void dynamic_stack_push(DynamicStack * stack, DynamicNode* node);
+void dynamic_stack_pop(DynamicStack * stack);
+
+void dynamic_stack_print(DynamicStack * stack);
 
 
 #endif //DYNAMICSTACK_H

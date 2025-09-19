@@ -1,21 +1,32 @@
 #include "singleLinked.h"
+
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 
+SingleNode *singlenodeInit() {
 
+    SingleNode *node = malloc(sizeof(SingleNode));
 
-void nodeInit(SingleNode * node) {
+    if (node == NULL) {
+        printf("Memory allocation error\n");
+        return NULL;
+    }
 
-   node->data = NULL;
+    node->data = NULL;
     node->next = NULL;
+
+    return node;
+
+
 
 }
 
-void dll_set_node_data(SingleNode * node, void * data) {
+void sll_set_node_data(SingleNode * node, void * data) {
 
-   node->data = data;
+    node->data = data;
 
 }
 
@@ -25,7 +36,9 @@ void sll_set_node_pointer(SingleNode * node, SingleNode *pNode) {
 
 }
 
-singleLinkedList sll_init(singleLinkedList *list, size_t size) {
+singleLinkedList sll_init(size_t size) {
+
+    singleLinkedList *list = malloc(sizeof(singleLinkedList));
 
     list->dataSize = size;
     list -> head = NULL;
@@ -72,23 +85,37 @@ int sll_size(const singleLinkedList * list) {
 // Inserting items in the linked list
 void sll_push_front(singleLinkedList * list, SingleNode * sNode) {
 
-        SingleNode * newNode =  list->head;
-        list -> head = sNode;
-        sNode->next = newNode;
-        list->size++;
-        if (list->size == 1) {
-            list -> tail = sNode;
-        }else if (list->size > 1) {
-            SingleNode * crr = list->head;
-        }
+    SingleNode *head = malloc(sizeof(SingleNode));
+
+    if (!head) {
+        printf("Memory allocation error\n");
+        free(head);
+        return;
+    }
+
+    head = list -> head;
+    list -> head = sNode;
+    sNode->next = head;
 
 }
 
 void sll_push_back(singleLinkedList * list, SingleNode * node) {
 
-    list -> tail = node;
-    node -> next = NULL;
+    if (list->head == NULL && list->tail == NULL) {
+        list->head = node;
+        list->tail = node;
+    }else if (list->head != NULL) {
 
+        SingleNode *tmp = list->head;
+        list->head = node;
+        node->next = tmp;
+
+        if (list->size >= 1) {
+            list->tail = tmp;
+        }
+        list->size++;
+
+    }
 
 }
 
@@ -109,17 +136,18 @@ void sll_insert_at(singleLinkedList * list, SingleNode * indexNode, SingleNode *
 
 void sll_remove_at(singleLinkedList * list, SingleNode * node) {
 
-   SingleNode *curr = list -> head;
+    SingleNode *curr = list -> head;
 
-    if (curr == node) {
-        list -> head = curr -> next;
-
-    }else if (curr == NULL) {
-
-        curr = list -> tail;
-
+    while (curr->next != NULL) {
+        if (curr == node) {
+            SingleNode *tmp = node->next;
+            node->next = tmp;
+            free(curr);
+            list->size--;
+            return;
+        }
+        curr = curr->next;
     }
-
 
 }
 
@@ -140,20 +168,10 @@ void sll_pop_back(singleLinkedList * list) {
 
 }
 
-void sll_remove_value(singleLinkedList * list, void * data) {
+void sll_remove_data(SingleNode * node) {
 
-    SingleNode * curr = list->head;
-
-    while (curr != NULL) {
-
-        curr = curr -> next;
-        if (curr->data == data) {
-            curr->data = NULL;
-        }
-
-    }
-
-
+    node->data = NULL;
+    free(node->data);
 
 }
 
@@ -199,8 +217,13 @@ void sll_print(singleLinkedList * list) {
 
     SingleNode *curr = list->head;
     while (curr != NULL) {
-        printf("%s\n", curr->data);
-        curr = curr -> next;
+        if (curr->data == NULL) {
+            printf("NULL");
+            curr = curr->next;
+        }else {
+            printf("%s\n", curr->data);
+            curr = curr -> next;
+        }
     }
 
 }

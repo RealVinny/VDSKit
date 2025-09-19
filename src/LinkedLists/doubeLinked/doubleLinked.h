@@ -21,7 +21,7 @@ typedef struct {
 } DoublyLinkedList;
 
 
-void nodeInit(DoubleNode *DoubleNode);
+DoubleNode *DoublenodeInit();
 
 void dll_set_node_data(DoubleNode *DoubleNode, void *data);
 
@@ -65,4 +65,4 @@ void dll_reverse(DoublyLinkedList *list);
 
 void dll_clone(DoublyLinkedList *list, DoublyLinkedList *copy);
 
-#endif DOUBLE_LINKED_H
+#endif //DOUBLE_LINKED_H

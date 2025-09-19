@@ -3,17 +3,27 @@
 #include <string.h>
 #include "doubleLinked.h"
 
-void nodeInit(DoubleNode* DoubleNode) {
+DoubleNode *DoublenodeInit() {
 
-    DoubleNode->data = NULL;
-    DoubleNode->next = NULL;
-    DoubleNode->prev = NULL;
+    DoubleNode *Dnd = malloc(sizeof(DoubleNode));
+
+    if (Dnd == NULL) {
+        printf("Memory allocation failed for DoublenodeInit()\n");
+        return NULL;
+    }
+
+    Dnd->data = NULL;
+    Dnd->next = NULL;
+    Dnd->prev = NULL;
+
+    return Dnd;
 
 }
 
-void dll_set_node_data(DoubleNode * DoubleNode, void * data) {
+void dll_set_node_data(DoubleNode * node, void * data) {
 
-   DoubleNode->data = data;
+    node->data = malloc(sizeof(node->data) +2);
+    memcpy(node->data, data, sizeof(data) +2);
 
 }
 
@@ -74,23 +84,36 @@ int dll_size(const DoublyLinkedList * list) {
 }
 
 // Inserting items in the linked list
-void sll_push_front(DoublyLinkedList * list, DoubleNode* sNode) {
+void dll_push_front(DoublyLinkedList * list, DoubleNode* sNode) {
 
-        DoubleNode * newNode =  list->head;
-        list -> head = sNode;
-        sNode->prev = NULL;
-        sNode->next = newNode;
-        newNode->prev = sNode;
-        list->size++;
-        if (list->size == 1) {
-            list -> tail = sNode;
-        }else if (list->size > 1) {
-            DoubleNode * crr = list->head;
+    if (list->head == NULL && list->tail == NULL) {
+        list->head = sNode;
+        list->tail = sNode;
+    }else {
+
+        DoubleNode *temp= malloc(sizeof(DoubleNode));
+
+        if (!temp) {
+
+            printf("Memory allocation failed for dll_push_front()\n");
+            free(temp);
+
         }
+
+
+       temp = list->head;
+        list->head = sNode;
+        sNode->next = temp;
+        temp->prev = sNode;
+
+
+    }
+
+
 
 }
 
-void sll_push_back(DoublyLinkedList * list, DoubleNode * DoubleNode) {
+void dll_push_back(DoublyLinkedList * list, DoubleNode * DoubleNode) {
 
     list -> tail = DoubleNode;
     DoubleNode -> next = NULL;
@@ -98,7 +121,7 @@ void sll_push_back(DoublyLinkedList * list, DoubleNode * DoubleNode) {
 
 }
 
-void sll_insert_at(DoublyLinkedList * list, DoubleNode * indexNode, DoubleNode * insertNode) {
+void dll_insert_at(DoublyLinkedList * list, DoubleNode * indexNode, DoubleNode * insertNode) {
 
     DoubleNode *curr = list -> head;
 
@@ -116,7 +139,7 @@ void sll_insert_at(DoublyLinkedList * list, DoubleNode * indexNode, DoubleNode *
 // Removing items from the list
 
 
-void sll_remove_at(DoublyLinkedList * list, DoubleNode * node) {
+void dll_remove_at(DoublyLinkedList * list, DoubleNode * node) {
 
     DoubleNode *curr = list -> head;
 
@@ -130,13 +153,13 @@ void sll_remove_at(DoublyLinkedList * list, DoubleNode * node) {
 
 }
 
-void sll_pop_front(DoublyLinkedList * list) {
+void dll_pop_front(DoublyLinkedList * list) {
 
     list -> head = list -> head -> next;
 
 }
 
-void sll_pop_back(DoublyLinkedList * list) {
+void dll_pop_back(DoublyLinkedList * list) {
 
     DoubleNode *curr = list -> head;
     while (curr -> next != NULL) {
@@ -147,7 +170,7 @@ void sll_pop_back(DoublyLinkedList * list) {
 
 }
 
-void sll_remove_value(DoublyLinkedList * list, void * data) {
+void dll_remove_value(DoublyLinkedList * list, void * data) {
 
     DoubleNode * curr = list->head;
 
@@ -165,7 +188,7 @@ void sll_remove_value(DoublyLinkedList * list, void * data) {
 }
 
 // Acessing the list
-DoubleNode sll_get_at(DoublyLinkedList * list, DoubleNode * node) {
+DoubleNode dll_get_at(DoublyLinkedList * list, DoubleNode * node) {
 
     DoubleNode *curr = list->head;
 
@@ -177,9 +200,16 @@ DoubleNode sll_get_at(DoublyLinkedList * list, DoubleNode * node) {
 
 }
 
-DoubleNode sll_find(DoublyLinkedList * list, void * data) {
+DoubleNode dll_find(DoublyLinkedList * list, void * data) {
 
-    DoubleNode *curr = list->head;
+    DoubleNode *curr = malloc(sizeof(DoubleNode));
+    if (!curr) {
+        printf("Memory allocation failed for dll_find()\n");
+        free(curr);
+
+    }
+
+    curr = list->head;
 
     while (curr->data != data) {
         curr = curr->next;
@@ -189,7 +219,7 @@ DoubleNode sll_find(DoublyLinkedList * list, void * data) {
 
 }
 
-const char *sll_get_data(DoublyLinkedList *list, DoubleNode *DoubleNode) {
+const char *dll_get_data(DoublyLinkedList *list, DoubleNode *DoubleNode) {
 
 
         if (DoubleNode->data == NULL) {
@@ -202,21 +232,30 @@ const char *sll_get_data(DoublyLinkedList *list, DoubleNode *DoubleNode) {
 
 // Utility
 
-void sll_print(DoublyLinkedList * list) {
+void dll_print(DoublyLinkedList * list) {
 
-    DoubleNode *curr = list->head;
-    while (curr != NULL) {
+    DoubleNode *curr = malloc(sizeof(DoubleNode));
+    if (!curr) {
+        printf("Memory allocation failed for dll_print()\n");
+        free(curr);
+    }
+
+    curr = list->head;
+
+    while(curr != NULL) {
         printf("%s\n", curr->data);
         curr = curr -> next;
     }
 
-}
-
-void sll_reverse(DoublyLinkedList * list) {
+    free(curr);
 
 }
 
-void sll_clone(DoublyLinkedList * list, DoublyLinkedList * copy) {
+void dll_reverse(DoublyLinkedList * list) {
+
+}
+
+void dll_clone(DoublyLinkedList * list, DoublyLinkedList * copy) {
 
 }
 
